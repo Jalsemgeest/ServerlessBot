@@ -1,0 +1,67 @@
+buildCommandElem = function(command, password) {
+            let card = document.createElement("div");
+            card.className = "card";
+            let pre = document.createElement("pre");
+            let code = document.createElement("code");
+            code.innerHTML = JSON.stringify(command, null, 4);
+            pre.appendChild(code);
+            
+            let del = document.createElement("button");
+            del.innerHTML = `<i class="fas fa-trash"></i>`;
+            del.addEventListener("click", async () => {
+                const resp = await fetch(`/bot/api/commands`, {
+                    method: "DELETE",
+                    body: JSON.stringify({
+                        password: password,
+                        id: command.id, 
+                        guild_id: command.guild_id || null
+                    })
+                })
+                if (resp.status === 204) {
+                    card.remove();
+                } else {
+                    let data = await resp.json();
+                    alert(data.error);
+                }
+            });
+            card.appendChild(pre);
+            card.appendChild(del);
+            return card;
+        };
+
+        renderCommands = async function(password) {
+            dialog.close();
+            const resp = await fetch(`/bot/api/sync`, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        password: password
+                    })
+                }
+            );
+            let data = await resp.json();
+            if (resp.status === 200) {
+                data.forEach(command => {
+                    main.appendChild(buildCommandElem(command, password));
+                });
+                hljs.highlightAll();
+            } else {
+                alert(`Discord Error: ${data.message} (code: ${data.code})`);
+            }
+        };
+        removeEventListener("click", login);
+        login.addEventListener("click", async () => {
+            let hashedPassword = await hashPassword(password.value);
+            const resp = await fetch(`/bot/api/verify`, {
+                method: "POST",
+                body: JSON.stringify({
+                    password: hashedPassword
+                })
+            });
+            let data = await resp.json();
+            if (resp.status !== 200) {
+                alert(data.error);
+            } else {
+                localStorage.setItem("password", hashedPassword);
+                await renderCommands(hashedPassword);
+            }
+        });
