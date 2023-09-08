@@ -11,6 +11,7 @@ In order to run this in deta.space you need to do the following:
 3. Create a discord app and copy the necessary fields into the example.env file and rename it to .env.
 4. Run `space push` to push the file to deta.space.
 5. Once the program is running, then copy the builder instance address: `https://<builder-id>.deta.app/bot/interactions` and add it to your Discord app's INTERACTIONS ENDPOINT URL.
-6. Then go to your builder's url config: `https://<builder-id>.deta.app/bot/api/dash`. You will then need to open up the console and paste the contents of `dashworker.txt` into it to override some Javascript. It's because `discohook` assumes it's the root API, but it's hosted under the `/bot` endpoint. So we need to update the functions to respect that.
-7. Enter the password `jakeiscool` - unless you've updated it within the `main.py` file, then enter that password instead :)
-8. Then it should work!
+6. Go to your deta.space 'dev' instance and open Settings -> Configuration and enter the discord bot token, appId, and public key.
+7. Then go to your builder's url config: `https://<builder-id>.deta.app/bot/api/dash`. You will then need to open up the console and paste the contents of `dashworker.txt` into it to override some Javascript. It's because `discohook` assumes it's the root API, but it's hosted under the `/bot` endpoint. So we need to update the functions to respect that.
+8. Enter the password `jakeiscool` - unless you've updated it within the `main.py` file, then enter that password instead :)
+9. Then it should work!
